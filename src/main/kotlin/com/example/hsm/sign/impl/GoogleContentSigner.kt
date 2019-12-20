@@ -1,7 +1,5 @@
-package com.example.hsm.sign
+package com.example.hsm.sign.impl
 
-import com.example.hsm.sign.GoogleKMSSimpleSign.createAuthorizedClient
-import com.example.hsm.sign.GoogleKMSSimpleSign.signAsymmetric
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier
 import org.bouncycastle.operator.ContentSigner
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder
@@ -14,7 +12,7 @@ import java.security.GeneralSecurityException
  * @author jmc90
  * @since 2019-10-29
  */
-class GoogleKMSContentSigner(
+class GoogleContentSigner(
         private val keyPath: String,
         private val googleAuthorisationKeyFileName: String
 ) : ContentSigner {
@@ -31,10 +29,11 @@ class GoogleKMSContentSigner(
 
     override fun getSignature(): ByteArray {
         try {
-            val kms = createAuthorizedClient(this.googleAuthorisationKeyFileName)
+            val googleCloudKMS = GoogleCloudKMS()
+            val kms = googleCloudKMS.createAuthorizedClient(this.googleAuthorisationKeyFileName)
             val signedAttributeSet = outputStream.toByteArray()
 
-            return signAsymmetric(signedAttributeSet, kms, this.keyPath)
+            return googleCloudKMS.signAsymmetric(signedAttributeSet, kms, this.keyPath)
         } catch (e: IOException) {
             e.printStackTrace()
             throw RuntimeException("Unable to sign with KMS")

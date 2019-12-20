@@ -1,6 +1,6 @@
 package com.example.hsm.csr
 
-import com.example.hsm.sign.GoogleKMSContentSigner
+import com.example.hsm.sign.impl.GoogleContentSigner
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder
 import org.bouncycastle.util.io.pem.PemObject
@@ -36,7 +36,7 @@ class GCPGenerateCSR {
             val p10Builder = JcaPKCS10CertificationRequestBuilder(
                     X500Principal("CN=, O=, OU=, C=, L=, ST=, Email="), getPublicKey())
 
-            val signer = GoogleKMSContentSigner("projects/~~~~~~~~~~~~/locations/~~~~~~~/keyRings/~~~~/cryptoKeys/~~~/cryptoKeyVersions/~",
+            val signer = GoogleContentSigner("projects/~~~~~~~~~~~~/locations/~~~~~~~/keyRings/~~~~/cryptoKeys/~~~/cryptoKeyVersions/~",
                     "/certification/~~~~~~~~~~~~~~~~")
             val csr = p10Builder.build(signer)
 
